@@ -35,6 +35,10 @@ __nx_tool_complete() {
           fi
         ;;
 
+        run-many)
+          __nx_run_many_args
+        ;;
+
         affected | affected:build | affected:test | affected:lint | affected:e2e | affected:apps | affected:libs)
           _nx_affected_args
         ;;
@@ -87,6 +91,10 @@ __nx_tool_complete() {
           __nx_run_args
         ;;
 
+        run-many)
+          __nx_run_many_args
+        ;;
+
         affected | affected:build | affected:test | affected:lint | affected:e2e | affected:apps | affected:libs)
           _nx_affected_args
         ;;
@@ -137,6 +145,7 @@ __nx_commands() {
   local commands
   commands=(
     "run[Run a target for a project]"
+    "run-many[Run task for multiple projects]"
     "affected[Run task for affected projects]"
     "affected\:build[Build applications and publishable libraries affected by changes]"
     "affected\:test[Test projects affected by changes]"
@@ -184,6 +193,26 @@ __nx_run_args() {
   args=(
     '--prod[Prod]'
   )
+  _arguments -C -s -S $aopts "$args[@]" '*:' && ret=0
+}
+
+__nx_run_many_args() {
+  local args aopts=()
+  args=(
+    '--all[All projects]'
+    '--configuration[This is the configuration to use when performing tasks on projects]'
+    '--maxParallel[Max number of parallel processes. This flag is ignored if the parallel option is set to false.]'
+    '--only-failed[Isolate projects which previously failed]'
+    '--parallel[Parallelize the command]'
+    '--projects[Projects to run (comma delimited)]'
+    '--runner[This is the name of the tasks runner configured in nx.json]'
+    '--skip-nx-cache[Rerun the tasks even when the results are available in the cache]'
+    '--target[Task to run for affected projects]'
+    '--verbose[Print additional error stack trace on failure]'
+    '--help[Show help]'
+    '--version[Show version number]'
+  )
+
   _arguments -C -s -S $aopts "$args[@]" '*:' && ret=0
 }
 
