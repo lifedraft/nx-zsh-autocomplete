@@ -42,8 +42,25 @@ __nx_tool_complete() {
         dep-graph)
           __nx_dep_graph_args
         ;;
+
         list)
           __nx_list_args
+        ;;
+
+        report)
+          __nx_default_args
+        ;;
+
+        migrate)
+          __nx_migrate_args
+        ;;
+
+        format:check)
+          __nx_format_args
+        ;;
+
+        format:write)
+          __nx_format_args
         ;;
       esac
     ;;
@@ -65,6 +82,22 @@ __nx_tool_complete() {
         list)
           __nx_list_args
         ;;
+
+        report)
+          __nx_default_args
+        ;;
+
+        migrate)
+          __nx_migrate_args
+        ;;
+
+        format:check)
+          __nx_format_args
+        ;;
+
+        format:write)
+          __nx_format_args
+        ;;
       esac
     ;;
   esac
@@ -79,6 +112,10 @@ __nx_commands() {
     "affected[Run task for affected projects]"
     "dep-graph[Graph dependencies within workspace]"
     "list[Lists installed plugins, capabilities of installed plugins and other available plugins.]"
+    "report[Reports useful version numbers to copy into the Nx issue template]"
+    "migrate[Creates a migrations file or runs migrations from the migrations file.]"
+    "format\:check[Check for un-formatted files]"
+    "format\:write[Overwrite un-formatted files]"
   )
   _values 'nx commands' ${commands[@]} && ret=0
 }
@@ -93,6 +130,15 @@ __nx_targets() {
   local expl targets
   targets=("${(@f)$(jq -r ".projects[\"$@\"].architect|keys|.[]" workspace.json)}")
   _wanted targets expl group compadd -a "$@" - targets
+}
+
+__nx_default_args() {
+  local args aopts=()
+  args=(
+    '--help[Show help]'
+    '--version[Show version number]'
+  )
+  _arguments -C -s -S $aopts "$args[@]" '*:' && ret=0
 }
 
 __nx_run_args() {
@@ -144,6 +190,38 @@ __nx_list_args() {
   local args aopts=()
   args=(
     '--plugin[The name of an installed plugin to query]'
+    '--help[Show help]'
+    '--version[Show version number]'
+  )
+  _arguments -C -s -S $aopts "$args[@]" '*:' && ret=0
+}
+
+__nx_migrate_args() {
+  local args aopts=()
+  args=(
+    '--run-migrations[Run migrations from the migrations.json file]'
+    '--help[Show help]'
+    '--version[Show version number]'
+  )
+  _arguments -C -s -S $aopts "$args[@]" '*:' && ret=0
+}
+
+__nx_format_args() {
+  local args aopts=()
+  args=(
+    '--all[All projects]'
+    '--base[Base of the current branch (usually master)]'
+    '--configuration[This is the configuration to use when performing tasks on projects]'
+    '--exclude[Exclude certain projects from being processed]'
+    '--files[Change the way Nx is calculating the affected command by providing directly changed files, list of files delimited by commas]'
+    '--head[Latest commit of the current branch (usually HEAD)]'
+    '--libs-and-apps'
+    '--only-failed[Isolate projects which previously failed]'
+    '--projects[Projects to format (comma delimited)]'
+    '--runner[This is the name of the tasks runner configured in nx.json]'
+    '--skip-nx-cache[Rerun the tasks even when the results are available in the cache]'
+    '--uncommitted[Uncommitted changes]'
+    '--untracked[Untracked changes]'
     '--help[Show help]'
     '--version[Show version number]'
   )
