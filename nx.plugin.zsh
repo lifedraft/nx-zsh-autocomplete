@@ -103,6 +103,10 @@ __nx_tool_complete() {
           _nx_affected_args
         ;;
 
+        serve)
+          __nx_serve_args
+        ;;
+
         affected:dep-graph)
           __nx_affected_dep_graph_args
         ;;
@@ -201,7 +205,7 @@ __nx_default_args() {
     '--help[Show help]'
     '--version[Show version number]'
   )
-  _arguments -C -s -S $aopts "$args[@]" '*:' && ret=0
+  _arguments -C -s -S $aopts "$args[@]" '*:'
 }
 
 __nx_run_args() {
@@ -209,7 +213,7 @@ __nx_run_args() {
   args=(
     '--prod[Prod]'
   )
-  _arguments -C -s -S $aopts "$args[@]" '*:' && ret=0
+  _arguments -C -s -S $aopts "$args[@]" '*:'
 }
 
 __nx_run_many_args() {
@@ -229,7 +233,7 @@ __nx_run_many_args() {
     '--version[Show version number]'
   )
 
-  _arguments -C -s -S $aopts "$args[@]" '*:' && ret=0
+  _arguments -C -s -S $aopts "$args[@]" '*:'
 }
 
 __nx_affected_args() {
@@ -252,7 +256,7 @@ __nx_affected_args() {
     '--version[Show version number]'
   )
 
-  _arguments -C -s -S $aopts "$args[@]" '*:' && ret=0
+  _arguments -C -s -S $aopts "$args[@]" '*:'
 }
 
 __nx_affected_dep_graph_args() {
@@ -277,7 +281,7 @@ __nx_affected_dep_graph_args() {
     '--version[Show version number]'
   )
 
-  _arguments -C -s -S $aopts "$args[@]" '*:' && ret=0
+  _arguments -C -s -S $aopts "$args[@]" '*:'
 }
 
 __nx_dep_graph_args() {
@@ -291,7 +295,7 @@ __nx_dep_graph_args() {
     '--help[Show help]'
     '--version[Show version number]'
   )
-  _arguments -C -s -S $aopts "$args[@]" '*:' && ret=0
+  _arguments -C -s -S $aopts "$args[@]" '*:'
 }
 
 __nx_list_args() {
@@ -301,7 +305,7 @@ __nx_list_args() {
     '--help[Show help]'
     '--version[Show version number]'
   )
-  _arguments -C -s -S $aopts "$args[@]" '*:' && ret=0
+  _arguments -C -s -S $aopts "$args[@]" '*:'
 }
 
 __nx_migrate_args() {
@@ -311,7 +315,7 @@ __nx_migrate_args() {
     '--help[Show help]'
     '--version[Show version number]'
   )
-  _arguments -C -s -S $aopts "$args[@]" '*:' && ret=0
+  _arguments -C -s -S $aopts "$args[@]" '*:'
 }
 
 __nx_format_args() {
@@ -333,7 +337,7 @@ __nx_format_args() {
     '--help[Show help]'
     '--version[Show version number]'
   )
-  _arguments -C -s -S $aopts "$args[@]" '*:' && ret=0
+  _arguments -C -s -S $aopts "$args[@]" '*:'
 }
 
 __nx_print_affected_args() {
@@ -355,7 +359,7 @@ __nx_print_affected_args() {
     '--help[Show help]'
     '--version[Show version number]'
   )
-  _arguments -C -s -S $aopts "$args[@]" '*:' && ret=0
+  _arguments -C -s -S $aopts "$args[@]" '*:'
 }
 
 __nx_workspace_schematic_args() {
@@ -366,7 +370,32 @@ __nx_workspace_schematic_args() {
     '--help[Show help]'
     '--version[Show version number]'
   )
-  _arguments -C -s -S $aopts "$args[@]" '*:' && ret=0
+  _arguments -C -s -S $aopts "$args[@]" '*:'
+}
+
+__nx_serve_args() {
+  local args common_args web_serve_args
+  common_args=(
+    '--allowedHosts[This option allows you to whitelist services that are allowed to access the dev server.]'
+    '--host[Host to listen on.]'
+    '--liveReload[Whether to reload the page on change, using live-reload.]'
+    '--open[Open the application in the browser.]'
+    '--port[Port to listen on.]'
+    '--publicHost[Public URL where the application will be served]'
+    '--ssl[Serve using HTTPS.]'
+    '--sslKey[SSL key to use for serving HTTPS.]'
+    '--sslCert[SSL certificate to use for serving HTTPS.]'
+    '--watch[Watches for changes and rebuilds application]'
+    '--help[Show help]'
+    '--version[Show version number]'
+  )
+  web_serve_args=(
+    '--buildTarget[Target which builds the application]'
+  )
+
+  _arguments \
+    $common_args \
+    $web_web_serve_args
 }
 
 compdef __nx_tool_complete nx
