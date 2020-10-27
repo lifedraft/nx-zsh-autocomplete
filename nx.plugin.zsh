@@ -35,8 +35,12 @@ __nx_tool_complete() {
           fi
         ;;
 
-        affected)
+        affected | affected:build | affected:test | affected:lint | affected:e2e | affected:apps | affected:libs)
           _nx_affected_args
+        ;;
+
+        affected:dep-graph)
+          __nx_affected_dep_graph_args
         ;;
 
         dep-graph)
@@ -83,8 +87,12 @@ __nx_tool_complete() {
           __nx_run_args
         ;;
 
-        affected)
+        affected | affected:build | affected:test | affected:lint | affected:e2e | affected:apps | affected:libs)
           _nx_affected_args
+        ;;
+
+        affected:dep-graph)
+          __nx_affected_dep_graph_args
         ;;
 
         dep-graph)
@@ -130,6 +138,13 @@ __nx_commands() {
   commands=(
     "run[Run a target for a project]"
     "affected[Run task for affected projects]"
+    "affected\:build[Build applications and publishable libraries affected by changes]"
+    "affected\:test[Test projects affected by changes]"
+    "affected\:lint[Lint projects affected by changes]"
+    "affected\:e2e[Run e2e tests for the applications affected by changes]"
+    "affected\:apps[Print applications affected by changes]"
+    "affected\:libs[Print libraries affected by changes]"
+    "affected\:dep-graph[Graph dependencies affected by changes]"
     "dep-graph[Graph dependencies within workspace]"
     "list[Lists installed plugins, capabilities of installed plugins and other available plugins.]"
     "report[Reports useful version numbers to copy into the Nx issue template]"
@@ -186,6 +201,31 @@ __nx_affected_args() {
     '--runner[This is the name of the tasks runner configured in nx.json]'
     '--skip-nx-cache[Rerun the tasks even when the results are available in the cache]'
     '--target[Task to run for affected projects]'
+    '--uncommitted[Uncommitted changes]'
+    '--untracked[Untracked changes]'
+    '--verbose[Print additional error stack trace on failure]'
+    '--version[Show version number]'
+  )
+
+  _arguments -C -s -S $aopts "$args[@]" '*:' && ret=0
+}
+
+__nx_affected_dep_graph_args() {
+  local args aopts=()
+  args=(
+    '--all[All projects]'
+    '--base[Base of the current branch (usually master)]'
+    '--configuration[This is the configuration to use when performing tasks on projects]'
+    '--exclude[Exclude certain projects from being processed]'
+    '--file[output file (e.g. --file=output.json or --file=dep-graph.html)]'
+    '--files[Change the way Nx is calculating the affected command by providing directly changed files, list of files delimited by commas]'
+    '--focus[Use to show the dependency graph for a particular project and every node that is either an ancestor or a descendant.]'
+    '--groupByFolder[Group projects by folder in dependency graph]'
+    '--head[Latest commit of the current branch (usually HEAD)]'
+    '--host[Bind the dep graph server to a specific ip address]'
+    '--only-failed[Isolate projects which previously failed]'
+    '--runner[This is the name of the tasks runner configured in nx.json]'
+    '--skip-nx-cache[Rerun the tasks even when the results are available in the cache]'
     '--uncommitted[Uncommitted changes]'
     '--untracked[Untracked changes]'
     '--verbose[Print additional error stack trace on failure]'
