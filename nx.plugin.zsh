@@ -62,6 +62,18 @@ __nx_tool_complete() {
         format:write)
           __nx_format_args
         ;;
+
+        print-affected)
+          __nx_print_affected_args
+        ;;
+
+        workspace-lint)
+          __nx_default_args
+        ;;
+
+        workspace-schematic)
+          __nx_workspace_schematic_args
+        ;;
       esac
     ;;
 
@@ -98,6 +110,14 @@ __nx_tool_complete() {
         format:write)
           __nx_format_args
         ;;
+
+        workspace-lint)
+          __nx_default_args
+        ;;
+
+        workspace-schematic)
+          __nx_workspace_schematic_args
+        ;;
       esac
     ;;
   esac
@@ -116,6 +136,9 @@ __nx_commands() {
     "migrate[Creates a migrations file or runs migrations from the migrations file.]"
     "format\:check[Check for un-formatted files]"
     "format\:write[Overwrite un-formatted files]"
+    "print-affected[Graph execution plan]"
+    "workspace-lint[Lint workspace or list of files. Note: To exclude files from this lint rule, you can add them to the \".nxignore\" file]"
+    "workspace-schematic[Runs a workspace schematic from the tools/schematics directory]"
   )
   _values 'nx commands' ${commands[@]} && ret=0
 }
@@ -222,6 +245,39 @@ __nx_format_args() {
     '--skip-nx-cache[Rerun the tasks even when the results are available in the cache]'
     '--uncommitted[Uncommitted changes]'
     '--untracked[Untracked changes]'
+    '--help[Show help]'
+    '--version[Show version number]'
+  )
+  _arguments -C -s -S $aopts "$args[@]" '*:' && ret=0
+}
+
+__nx_print_affected_args() {
+  local args aopts=()
+  args=(
+    '--all[All projects]'
+    '--base[Base of the current branch (usually master)]'
+    '--configuration[This is the configuration to use when performing tasks on projects]'
+    '--exclude[Exclude certain projects from being processed]'
+    '--files[Change the way Nx is calculating the affected command by providing directly changed files, list of files delimited by commas]'
+    '--head[Latest commit of the current branch (usually HEAD)]'
+    '--only-failed[Isolate projects which previously failed]'
+    '--runner[This is the name of the tasks runner configured in nx.json]'
+    '--select'
+    '--skip-nx-cache[Rerun the tasks even when the results are available in the cache]'
+    '--uncommitted[Uncommitted changes]'
+    '--untracked[Untracked changes]'
+    '--verbose[Print additional error stack trace on failure]'
+    '--help[Show help]'
+    '--version[Show version number]'
+  )
+  _arguments -C -s -S $aopts "$args[@]" '*:' && ret=0
+}
+
+__nx_workspace_schematic_args() {
+  local args aopts=()
+  args=(
+    '--list-schematics[List the available workspace-schematics]'
+    '--name[The name of your schematic]'
     '--help[Show help]'
     '--version[Show version number]'
   )
