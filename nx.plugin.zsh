@@ -31,8 +31,12 @@ __nx_tool_complete() {
             else
               suf=( -qS ':' )
             fi
-            __nx_projects "$suf[@]" && ret=0
+            __nx_projects_with_suffix "$suf[@]" && ret=0
           fi
+        ;;
+
+        serve | build | test | lint | e2e)
+          __nx_projects && ret=0
         ;;
 
         run-many)
@@ -146,6 +150,12 @@ __nx_commands() {
   commands=(
     "run[Run a target for a project]"
     "run-many[Run task for multiple projects]"
+    "generate[Runs a schematic that generates and/or modifies files based on a schematic from a collection.]"
+    "serve[Builds and serves an application, rebuilding on file changes.]"
+    "build[Compiles an application into an output directory named dist/ at the given output path. Must be executed from within a workspace directory.]"
+    "test[Runs unit tests in a project using the configured unit test runner.]"
+    "lint[Runs linting tools on application code in a given project folder using the configured linter.]"
+    "e2e[Builds and serves an app, then runs end-to-end tests using the configured E2E test runner.]"
     "affected[Run task for affected projects]"
     "affected\:build[Build applications and publishable libraries affected by changes]"
     "affected\:test[Test projects affected by changes]"
@@ -168,6 +178,12 @@ __nx_commands() {
 }
 
 __nx_projects() {
+  local expl projects
+  projects=("${(@f)$(jq -r '.projects|keys|.[]' workspace.json)}")
+  _wanted projects expl project compadd -k - projects
+}
+
+__nx_projects_with_suffix() {
   local expl projects
   projects=("${(@f)$(jq -r '.projects|keys|.[]' workspace.json)}")
   _wanted projects expl project compadd "$@" -k - projects
