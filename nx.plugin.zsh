@@ -272,11 +272,11 @@ __nx_affected_dep_graph_args() {
     '--groupByFolder[Group projects by folder in dependency graph]'
     '--head[Latest commit of the current branch (usually HEAD)]'
     '--host[Bind the dep graph server to a specific ip address]'
-    '--only-failed[Isolate projects which previously failed]'
+    '--only-failed[Isolate projects which previously failed]:toggle:(true false)'
     '--runner[This is the name of the tasks runner configured in nx.json]'
     '--skip-nx-cache[Rerun the tasks even when the results are available in the cache]'
-    '--uncommitted[Uncommitted changes]'
-    '--untracked[Untracked changes]'
+    '--uncommitted[Uncommitted changes]:toggle:(true false)'
+    '--untracked[Untracked changes]:toggle:(true false)'
     '--verbose[Print additional error stack trace on failure]'
     '--version[Show version number]'
   )
@@ -374,8 +374,8 @@ __nx_workspace_schematic_args() {
 }
 
 __nx_serve_args() {
-  local args common_args web_serve_args
-  common_args=(
+  local args common_args web_serve_args aopts=()
+  args=(
     '--allowedHosts[This option allows you to whitelist services that are allowed to access the dev server.]'
     '--host[Host to listen on.]'
     '--liveReload[Whether to reload the page on change, using live-reload.]'
@@ -389,13 +389,8 @@ __nx_serve_args() {
     '--help[Show help]'
     '--version[Show version number]'
   )
-  web_serve_args=(
-    '--buildTarget[Target which builds the application]'
-  )
 
-  _arguments \
-    $common_args \
-    $web_web_serve_args
+  _arguments -C -s -S $args ':*'
 }
 
 compdef __nx_tool_complete nx
