@@ -23,16 +23,7 @@ __nx_tool_complete() {
     (subcommand)
       case $words[2] in
         run)
-          if compset -P '*[:.]'; then
-            __nx_targets "${words[3]%:*}" && ret=0
-          else
-            if compset -S '[.:]*'; then
-              suf=()
-            else
-              suf=( -qS ':' )
-            fi
-            __nx_projects_with_suffix "$suf[@]" && ret=0
-          fi
+          __nx_run_target
         ;;
 
         serve | build | test | lint | e2e)
@@ -181,6 +172,24 @@ __nx_commands() {
   _values 'nx commands' ${commands[@]} && ret=0
 }
 
+__nx_run_target() {
+  local ret=1
+  if compset -P 1 '*:'; then
+    local project="${${IPREFIX%:}##*:}"
+
+    if compset -P 1 '*:'; then
+      local architect="${${IPREFIX%:}##*:}"
+      __nx_configurations $project $architect && ret=0
+    else
+      __nx_architects $project && ret=0
+    fi
+  else
+    __nx_projects_with_suffix && ret=0
+  fi
+
+  return ret
+}
+
 __nx_projects() {
   local expl projects
   projects=("${(@f)$(jq -r '.projects|keys|.[]' workspace.json)}")
@@ -190,13 +199,19 @@ __nx_projects() {
 __nx_projects_with_suffix() {
   local expl projects
   projects=("${(@f)$(jq -r '.projects|keys|.[]' workspace.json)}")
-  _wanted projects expl project compadd "$@" -k - projects
+  _wanted projects expl project compadd -qS ':' -k - projects
 }
 
-__nx_targets() {
+__nx_architects() {
   local expl targets
-  targets=("${(@f)$(jq -r ".projects[\"$@\"].architect|keys|.[]" workspace.json)}")
-  _wanted targets expl group compadd -a "$@" - targets
+  targets=("${(@f)$(jq -r ".projects[\"$1\"].architect|keys|.[]" workspace.json)}")
+  _wanted targets expl target compadd -qS ':' -k - targets
+}
+
+__nx_configurations() {
+  local expl configurations
+  configurations=("${(@f)$(jq -r ".projects[\"$1\"].architect[\"$2\"].configurations|keys|.[]" workspace.json)}")
+  _wanted configurations expl group compadd -k - configurations
 }
 
 __nx_default_args() {
@@ -205,7 +220,7 @@ __nx_default_args() {
     '--help[Show help]'
     '--version[Show version number]'
   )
-  _arguments -C -s -S $aopts "$args[@]" '*:'
+  _arguments -C -s -S $aopts "$args[@]" ':*'
 }
 
 __nx_run_args() {
@@ -213,7 +228,7 @@ __nx_run_args() {
   args=(
     '--prod[Prod]'
   )
-  _arguments -C -s -S $aopts "$args[@]" '*:'
+  _arguments -C -s -S $aopts "$args[@]" ':*'
 }
 
 __nx_run_many_args() {
@@ -233,7 +248,7 @@ __nx_run_many_args() {
     '--version[Show version number]'
   )
 
-  _arguments -C -s -S $aopts "$args[@]" '*:'
+  _arguments -C -s -S $aopts "$args[@]" ':*'
 }
 
 __nx_affected_args() {
@@ -256,7 +271,7 @@ __nx_affected_args() {
     '--version[Show version number]'
   )
 
-  _arguments -C -s -S $aopts "$args[@]" '*:'
+  _arguments -C -s -S $aopts "$args[@]" ':*'
 }
 
 __nx_affected_dep_graph_args() {
@@ -281,7 +296,7 @@ __nx_affected_dep_graph_args() {
     '--version[Show version number]'
   )
 
-  _arguments -C -s -S $aopts "$args[@]" '*:'
+  _arguments -C -s -S $aopts "$args[@]" ':*'
 }
 
 __nx_dep_graph_args() {
@@ -295,7 +310,7 @@ __nx_dep_graph_args() {
     '--help[Show help]'
     '--version[Show version number]'
   )
-  _arguments -C -s -S $aopts "$args[@]" '*:'
+  _arguments -C -s -S $aopts "$args[@]" ':*'
 }
 
 __nx_list_args() {
@@ -305,7 +320,7 @@ __nx_list_args() {
     '--help[Show help]'
     '--version[Show version number]'
   )
-  _arguments -C -s -S $aopts "$args[@]" '*:'
+  _arguments -C -s -S $aopts "$args[@]" ':*'
 }
 
 __nx_migrate_args() {
@@ -315,7 +330,7 @@ __nx_migrate_args() {
     '--help[Show help]'
     '--version[Show version number]'
   )
-  _arguments -C -s -S $aopts "$args[@]" '*:'
+  _arguments -C -s -S $aopts "$args[@]" ':*'
 }
 
 __nx_format_args() {
@@ -337,7 +352,7 @@ __nx_format_args() {
     '--help[Show help]'
     '--version[Show version number]'
   )
-  _arguments -C -s -S $aopts "$args[@]" '*:'
+  _arguments -C -s -S $aopts "$args[@]" ':*'
 }
 
 __nx_print_affected_args() {
@@ -359,7 +374,7 @@ __nx_print_affected_args() {
     '--help[Show help]'
     '--version[Show version number]'
   )
-  _arguments -C -s -S $aopts "$args[@]" '*:'
+  _arguments -C -s -S $aopts "$args[@]" ':*'
 }
 
 __nx_workspace_schematic_args() {
@@ -370,7 +385,7 @@ __nx_workspace_schematic_args() {
     '--help[Show help]'
     '--version[Show version number]'
   )
-  _arguments -C -s -S $aopts "$args[@]" '*:'
+  _arguments -C -s -S $aopts "$args[@]" ':*'
 }
 
 __nx_serve_args() {
