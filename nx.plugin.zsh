@@ -203,9 +203,9 @@ __nx_projects_with_suffix() {
 }
 
 __nx_architects() {
-  local expl targets
-  targets=("${(@f)$(jq -r ".projects[\"$1\"].architect|keys|.[]" workspace.json)}")
-  _wanted targets expl target compadd -qS ':' -k - targets
+  local expl architects
+  architects=("${(@f)$(jq -r ".projects[\"$1\"].architect|keys|.[]" workspace.json)}")
+  _wanted architects expl architect compadd -qS ':' -k - architects
 }
 
 __nx_configurations() {
