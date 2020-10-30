@@ -35,7 +35,7 @@ __nx_tool_complete() {
         ;;
 
         affected | affected:build | affected:test | affected:lint | affected:e2e | affected:apps | affected:libs)
-          _nx_affected_args
+          __nx_affected_args
         ;;
 
         affected:dep-graph)
